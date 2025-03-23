@@ -1,6 +1,6 @@
 import { Node, useNodeConnections, useReactFlow } from "@xyflow/react";
 import { cn } from "@/lib/utils";
-import { NodeType } from "../nodes";
+import { NodeData, NodeType } from "../nodes";
 import { useEffect, useMemo, useState } from "react";
 import { Combobox } from "@/components/ui/combobox";
 import { PromptNodeData } from "../nodes/prompt";
@@ -9,6 +9,7 @@ import SheetInputValues from "./inputValues";
 import { CodeNodeData } from "../nodes/code";
 import PromptDialog from "@/app/(auth)/library/_components/promptDialog";
 import { api } from "@/packages/trpc/react";
+import TriggerSheet from "./triggerSheet";
 
 interface NodeSheetProps {
   node: Node | undefined;
@@ -18,7 +19,7 @@ type TypeNodeData<T extends NodeType> = T extends "prompt"
   ? PromptNodeData["data"]
   : T extends "code"
   ? CodeNodeData["data"]
-  : never;
+  : NodeData["data"];
 
 const NodeSheetContent = ({ node }: { node: Node }) => {
   const type = node.type as NodeType;
@@ -145,6 +146,8 @@ const NodeSheetContent = ({ node }: { node: Node }) => {
             </div>
           </>
         );
+      case "trigger":
+        return <TriggerSheet node={node} />;
       default:
         return (
           <p>
@@ -153,7 +156,7 @@ const NodeSheetContent = ({ node }: { node: Node }) => {
           </p>
         );
     }
-  }, [type, data, connections, prompts]);
+  }, [type, data, connections, prompts, node]);
 
   return (
     <>
@@ -167,7 +170,7 @@ const NodeSheet = ({ node }: NodeSheetProps) => {
   return (
     <div
       className={cn(
-        "absolute right-0 top-0 bottom-0 w-72 flex flex-col p-4 gap-2 bg-background border-l transition-transform",
+        "absolute right-0 top-0 bottom-0 w-80 flex flex-col p-4 gap-2 bg-background border-l transition-transform",
         node
           ? "translate-x-0 duration-200 ease-initial"
           : "translate-x-full duration-75"

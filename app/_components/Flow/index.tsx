@@ -18,12 +18,24 @@ import Sidebar from "./sidebar";
 import nodeTypes, { NodeData, NodeType } from "./nodes";
 import NodeSheet from "./sheet/nodeSheet";
 
-let id = 0;
+let id = 1;
 const getId = () => `node${id++}`;
+
+const initialNodes = [
+  {
+    id: "trigger",
+    type: "trigger",
+    position: { x: 0, y: 0 },
+    data: {
+      inputValues: {},
+      outputValues: {},
+    } as NodeData["data"],
+  },
+];
 
 const Flow = () => {
   const reactFlowWrapper = useRef(null);
-  const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<Node>(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const { screenToFlowPosition } = useReactFlow();
   const [type, setType] = useState<NodeType>("prompt");

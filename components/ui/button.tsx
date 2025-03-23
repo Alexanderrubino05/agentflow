@@ -41,11 +41,13 @@ function Button({
   size,
   asChild = false,
   isLoading = false,
+  icon,
   ...props
 }: React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
     isLoading?: boolean;
+    icon?: React.ReactNode;
   }) {
   const Comp = asChild ? Slot : "button";
 
@@ -61,7 +63,10 @@ function Button({
           className={!variant ? "text-white" : "text-black"}
         />
       ) : (
-        props.children
+        <>
+          {icon}
+          {props.children}
+        </>
       )}
     </Comp>
   );
