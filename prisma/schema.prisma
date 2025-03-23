@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["relationJoins", "driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id      String   @id @default(cuid())
+  email   String   @unique
+  name    String?
+  password String
+
+  flows   Flow[]
+  prompts Prompt[]
+  codes   Code[]
+}
+
+model Flow {
+  id      String   @id @default(cuid())
+  object  Json
+  systemPrompt String?
+  
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Prompt {
+  id      String   @id @default(cuid())
+  title   String
+  prompt  String
+  inputValues Json
+  
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Code {
+  id      String   @id @default(cuid())
+  title   String
+  code    String
+  inputValues Json
+
+  userId  String
+  user    User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
